@@ -9,17 +9,17 @@ public class Weapon extends Item {
     private int baseDamage;
 
     public Weapon(String name, int level, WeaponType weaponType) {
-        super(ItemType.Weapon, name, level, SlotType.Weapon);
-        setWeaponType(weaponType);
+        super(ItemType.Weapon, SlotType.Weapon, name, level);
+        this.weaponType = weaponType;
         switch (weaponType) {
             case Melee:
-                setBaseDamage(15 + level * 2);
+                baseDamage = 15 + level * 2;
                 break;
             case Ranged:
-                setBaseDamage(5 + level * 3);
+                baseDamage = 5 + level * 3;
                 break;
             case Magic:
-                setBaseDamage(25 + level * 2);
+                baseDamage = 25 + level * 2;
                 break;
         }
     }
@@ -28,23 +28,15 @@ public class Weapon extends Item {
         return weaponType;
     }
 
-    public void setWeaponType(WeaponType weaponType) {
-        this.weaponType = weaponType;
-    }
-
     public int getBaseDamage() {
         return baseDamage;
-    }
-
-    public void setBaseDamage(int baseDamage) {
-        this.baseDamage = baseDamage;
     }
 
     @Override
     public String toString() {
         return super.toString() +
                 "\nWeapon type: " + weaponType +
-                "\nWeapon level: " + getLevel() +
+                "\nWeapon level: " + level +
                 "\nDamage: " + baseDamage + "\n";
     }
 }

@@ -24,8 +24,8 @@ public class Main {
         warrior.addXp(900);
         System.out.println(warrior.toString());
         warrior.attack();
-        warrior.setWeapon(greatAxe);
-        warrior.setBody(plateChest);
+        warrior.equipWeapon(greatAxe);
+        warrior.equipArmor(plateChest);
         System.out.println(warrior.toString());
         warrior.attack();
         System.out.println(plateChest.toString());

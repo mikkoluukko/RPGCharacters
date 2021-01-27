@@ -2,18 +2,18 @@ package heroes;
 
 public class Ranger extends Hero {
     public Ranger() {
-        setHerotype(HeroType.Ranger);
-        setBaseHealth(120);
-        setBaseStrength(5);
-        setBaseDexterity(10);
-        setBaseIntelligence(2);
+        heroType = HeroType.Ranger;
+        baseHealth = 120;
+        baseStrength = 5;
+        baseDexterity = 10;
+        baseIntelligence = 2;
     }
 
-    public void levelUp() {
+    protected void levelUp() {
         super.levelUp();
-        setBaseHealth(getBaseHealth() + 20);
-        setBaseStrength(getBaseStrength() + 2);
-        setBaseDexterity(getBaseDexterity() + 5);
-        setBaseIntelligence(getBaseIntelligence() + 1);
+        baseHealth += 20;
+        baseStrength += 2;
+        baseDexterity += 5;
+        baseIntelligence += 1;
     }
 }

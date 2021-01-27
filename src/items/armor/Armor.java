@@ -5,24 +5,24 @@ import items.ItemType;
 import items.SlotType;
 
 public abstract class Armor extends Item {
-    private ArmorType armorType;
-    private double slotMultiplier;
-    private int healthBonus;
-    private int strengthBonus;
-    private int dexterityBonus;
-    private int intelligenceBonus;
+    protected ArmorType armorType;
+    protected double slotMultiplier;
+    protected int healthBonus;
+    protected int strengthBonus;
+    protected int dexterityBonus;
+    protected int intelligenceBonus;
 
     public Armor(String name, int level, SlotType slotType) {
-        super(ItemType.Armor, name, level, slotType);
+        super(ItemType.Armor, slotType, name, level);
         switch (slotType) {
             case Body:
-                setSlotMultiplier(1);
+                slotMultiplier = 1;
                 break;
             case Head:
-                setSlotMultiplier(0.8);
+                slotMultiplier = 0.8;
                 break;
             case Legs:
-                setSlotMultiplier(0.6);
+                slotMultiplier = 0.6;
                 break;
         }
     }
@@ -31,55 +31,31 @@ public abstract class Armor extends Item {
         return armorType;
     }
 
-    public void setArmorType(ArmorType armorType) {
-        this.armorType = armorType;
-    }
-
     public double getSlotMultiplier() {
         return slotMultiplier;
-    }
-
-    public void setSlotMultiplier(double slotMultiplier) {
-        this.slotMultiplier = slotMultiplier;
     }
 
     public int getHealthBonus() {
         return healthBonus;
     }
 
-    public void setHealthBonus(int healthBonus) {
-        this.healthBonus = healthBonus;
-    }
-
     public int getStrengthBonus() {
         return strengthBonus;
-    }
-
-    public void setStrengthBonus(int strengthBonus) {
-        this.strengthBonus = strengthBonus;
     }
 
     public int getDexterityBonus() {
         return dexterityBonus;
     }
 
-    public void setDexterityBonus(int dexterityBonus) {
-        this.dexterityBonus = dexterityBonus;
-    }
-
     public int getIntelligenceBonus() {
         return intelligenceBonus;
-    }
-
-    public void setIntelligenceBonus(int intelligenceBonus) {
-        this.intelligenceBonus = intelligenceBonus;
     }
 
     @Override
     public String toString() {
         return super.toString() +
-                "\nArmor type: " + getArmorType() +
-                "\nSlot: " + getSlotType() +
-                "\nArmor level: " + getLevel();
+                "\nArmor type: " + armorType +
+                "\nSlot: " + slotType +
+                "\nArmor level: " + level;
     }
 }
