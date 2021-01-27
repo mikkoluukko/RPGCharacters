@@ -13,6 +13,10 @@ public abstract class Item {
         this.level = level;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getLevel() {
         return level;
     }
