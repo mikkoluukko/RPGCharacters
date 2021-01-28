@@ -6,9 +6,8 @@ public abstract class Item {
     protected String name;
     protected int level;
 
-    public Item(ItemType itemType, SlotType slotType, String name, int level) {
+    public Item(ItemType itemType, String name, int level) {
         this.itemType = itemType;
-        this.slotType = slotType;
         this.name = name;
         this.level = level;
     }

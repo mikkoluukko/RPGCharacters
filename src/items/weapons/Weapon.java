@@ -2,14 +2,13 @@ package items.weapons;
 
 import items.Item;
 import items.ItemType;
-import items.SlotType;
 
 public class Weapon extends Item {
     private WeaponType weaponType;
     private int baseDamage;
 
     public Weapon(String name, int level, WeaponType weaponType) {
-        super(ItemType.Weapon, SlotType.Weapon, name, level);
+        super(ItemType.Weapon, name, level);
         this.weaponType = weaponType;
         switch (weaponType) {
             case Melee:

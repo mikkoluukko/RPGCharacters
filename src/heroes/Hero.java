@@ -1,5 +1,6 @@
 package heroes;
 
+import items.Item;
 import items.armor.Armor;
 import items.weapons.Weapon;
 
@@ -60,11 +61,19 @@ public abstract class Hero {
         }
     }
 
+    public boolean checkItemLevel(Item item) {
+        if (level >= item.getLevel()) {
+            System.out.println(name + " equipped " + item.getName() + "\n");
+        } else {
+            System.out.println(name + "'s level is not high enough to equip this item.");
+        }
+        return level >= item.getLevel();
+    }
+
     public void equipWeapon(Weapon weapon) {
-        if (level >= weapon.getLevel()) {
+        if (checkItemLevel(weapon)) {
             this.weapon = weapon;
             attack.updateDamage();
-            System.out.println(name + " equipped " + weapon.getName() + "\n");
         }
     }
 
@@ -80,31 +89,44 @@ public abstract class Hero {
         equipmentIntelligence -= armor.getIntelligenceBonus();
         currentHealth -= armor.getHealthBonus();
         attack.updateDamage();
+        switch (armor.getSlotType()) {
+            case Head:
+                headArmor = null;
+                break;
+            case Body:
+                bodyArmor = null;
+                break;
+            case Legs:
+                legsArmor = null;
+                break;
+        }
     }
 
     public void equipArmor(Armor armor) {
-        switch (armor.getSlotType()) {
-            case Head:
-                if (headArmor != null) {
-                    removeArmor(headArmor);
-                }
-                headArmor = armor;
-                updateEquipmentBonus(armor);
-                break;
-            case Body:
-                if (bodyArmor != null) {
-                    removeArmor(bodyArmor);
-                }
-                bodyArmor = armor;
-                updateEquipmentBonus(armor);
-                break;
-            case Legs:
-                if (legsArmor != null) {
-                    removeArmor(legsArmor);
-                }
-                legsArmor = armor;
-                updateEquipmentBonus(armor);
-                break;
+        if (checkItemLevel(armor)) {
+            switch (armor.getSlotType()) {
+                case Head:
+                    if (headArmor != null) {
+                        removeArmor(headArmor);
+                    }
+                    headArmor = armor;
+                    updateEquipmentBonus(armor);
+                    break;
+                case Body:
+                    if (bodyArmor != null) {
+                        removeArmor(bodyArmor);
+                    }
+                    bodyArmor = armor;
+                    updateEquipmentBonus(armor);
+                    break;
+                case Legs:
+                    if (legsArmor != null) {
+                        removeArmor(legsArmor);
+                    }
+                    legsArmor = armor;
+                    updateEquipmentBonus(armor);
+                    break;
+            }
         }
     }
 
@@ -115,13 +137,13 @@ public abstract class Hero {
         equipmentIntelligence += armor.getIntelligenceBonus();
         currentHealth += armor.getHealthBonus();
         attack.updateDamage();
-        System.out.println("Equipped " + armor.getName() + "\n");
+        System.out.println(name + " equipped " + armor.getName() + "\n");
     }
 
     public void performAttack(Hero opponent) {
         int damage = attack.attackDamage();
+        System.out.println(name  + " attacks " + opponent.name + " for " + damage + "\n");
         opponent.receiveAttack(damage);
-        System.out.println("Attacking for " + damage + "\n");
     }
 
     public void receiveAttack(int damage) {
@@ -130,6 +152,8 @@ public abstract class Hero {
         } else {
             currentHealth = 0;
         }
+        System.out.println(name + " lost " + damage + " HP. Current HP: " +
+                currentHealth + "/" + (baseHealth + equipmentHealth) + "\n");
     }
 
     // Added the displaying of currentHealth
@@ -145,6 +169,13 @@ public abstract class Hero {
                 //"\nTot. XP: " + xpTotal +
                 //"\nXP total to next: " + xpTotalToNext +
                 "\nXP to next: " + xpToNext + "\n";
+    }
 
+    public String showEquipment() {
+        return name + " (" + heroType + ") " + "has the following items equipped:" +
+                "\nWeapon: " + (weapon != null ? weapon.getName() : " empty") +
+                "\nHead: " + (headArmor != null ? headArmor.getName() : " empty") +
+                "\nBody: " + (bodyArmor != null ? bodyArmor.getName() : " empty") +
+                "\nLegs: " + (legsArmor != null ? legsArmor.getName() : " empty") + "\n";
     }
 }

@@ -13,7 +13,8 @@ public abstract class Armor extends Item {
     protected int intelligenceBonus;
 
     public Armor(String name, int level, SlotType slotType) {
-        super(ItemType.Armor, slotType, name, level);
+        super(ItemType.Armor, name, level);
+        this.slotType = slotType;
         switch (slotType) {
             case Body:
                 slotMultiplier = 1;
