@@ -14,18 +14,12 @@ public class Attack {
     public void updateDamage() {
         if (attacker.weapon != null) {
             switch (attacker.weapon.getWeaponType()) {
-                case Melee:
-                    defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
-                            1.5 * (attacker.baseStrength + attacker.equipmentStrength));
-                    break;
-                case Ranged:
-                    defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
-                            2 * (attacker.baseDexterity + attacker.equipmentDexterity));
-                    break;
-                case Magic:
-                    defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
-                            3 * (attacker.baseIntelligence + attacker.equipmentIntelligence));
-                    break;
+                case Melee -> defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
+                        1.5 * (attacker.baseStrength + attacker.equipmentStrength));
+                case Ranged -> defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
+                        2 * (attacker.baseDexterity + attacker.equipmentDexterity));
+                case Magic -> defaultDamage = (int) Math.floor(attacker.weapon.getBaseDamage() +
+                        3 * (attacker.baseIntelligence + attacker.equipmentIntelligence));
             }
         } else {
             defaultDamage = 0;

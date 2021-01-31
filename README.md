@@ -1,7 +1,8 @@
 # Task 3: RPG Characters
 ## About
-This program is a simple RPG character system. 
+This program is a simple RPG character system to demonstrate object-oriented design. 
 The goal was to make it as extendable as possible by following good modelling and class design conventions.
+I decided to try to achieve this mainly with abstract class inheritance and tight encapsulation.
 
 ## Requirements / task definition
 ### The characters
@@ -112,12 +113,24 @@ When a character attacks, their weapon will deal its base damage + any
 bonus from stats. If a character has no weapon equipped, this will
 result in no damage dealt.
 
+### Optional parts not defined in the requirements
+- Characters have a current health value.
+- Characters have the ability to attack another character.
+- Attacking reduces the opponent's current health value.
+- For gamification purposes attack's damage is a random value between 0.5 ... 1.5 * (base damage + any bonus from stats).
+- Attack's have a type (Normal, Fire, Poison). Currently defaults to normal.
+- Program has a text UI where the user can create characters and items and try out all the functionalities associated with them.
+- Program has a pre-defined demo option which demonstrates all the functionalities and requirements of the program.
+
 ## Code description
-The source code is divided into two main packages, `heroes` and `items`. 
+Besides root folder the source code is divided into two main packages, `heroes` and `items`. 
+
+Root folder includes:
+- `Main`, `Logic` and `UserInterface` classes that can be used to try out and demonstrate the actual character system.
 
 Package `heroes` includes:
 - An abstract class `Hero` and its subclasses for different character types (`Mage`, `Ranger`, `Warrior`).
-- `Attack` class for calculating default damage of a specific weapon and for attacking.
+- `Attack` class for calculating damage of a specific weapon and for attacking.
 - Enums `HeroType` where different allowed character classes are defined and `AttackType`(not defined in the task requirements) where different attack types are defined.
 
 Package `items` includes:
@@ -125,10 +138,17 @@ Package `items` includes:
 - Enums `ItemType` where different item types are defined and `SlotType` where different slot types are defined.
 - Subpackages `armor` and `weapon`.
 
-Subpackage `armor` includes:
+`items` subpackage `armor` includes:
 - An abstract class `Armor` (inherited from `Item`) and its subclasses for different armor types (`Cloth`, `Leather`, `Plate`).
 - Enum `HeroType` where different allowed armor types are defined.
 
-Subpackage `weapon` includes:
+`items` subpackage `weapon` includes:
 - Class `Weapon`.
 - Enum `WeaponType` where different allowed weapon types are defined.
+
+## Demonstration
+Running the program will start a text user interface where the user can create characters and items and perform
+all the different actions on them (equipping and removing items, adding xp, attacking, printing out information).
+
+Instead of creating characters and items themselves the user can also decide to run the pre-defined demo that creates characters and 
+items automatically and demonstrates the different actions on them.
