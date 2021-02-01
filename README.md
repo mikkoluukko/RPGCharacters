@@ -2,7 +2,10 @@
 ## About
 This program is a simple RPG character system to demonstrate object-oriented design. 
 The goal was to make it as extendable as possible by following good modelling and class design conventions.
-I decided to try to achieve this mainly with abstract class inheritance and tight encapsulation.
+I hoped to achieve this by trying to follow SOLID principles.
+
+In latest refactor I removed all enums and in some cases converted abstract classes to interfaces.
+Even though this slightly increased the amount of code, I felt these changes made the code more SOLID compliant.
 
 ## Requirements / task definition
 ### The characters
@@ -118,7 +121,6 @@ result in no damage dealt.
 - Characters have the ability to attack another character.
 - Attacking reduces the opponent's current health value.
 - For gamification purposes attack's damage is a random value between 0.5 ... 1.5 * (base damage + any bonus from stats).
-- Attack's have a type (Normal, Fire, Poison). Currently defaults to normal.
 - Program has a text UI where the user can create characters and items and try out all the functionalities associated with them.
 - Program has a pre-defined demo option which demonstrates all the functionalities and requirements of the program.
 
@@ -131,20 +133,16 @@ Root folder includes:
 Package `heroes` includes:
 - An abstract class `Hero` and its subclasses for different character types (`Mage`, `Ranger`, `Warrior`).
 - `Attack` class for calculating damage of a specific weapon and for attacking.
-- Enums `HeroType` where different allowed character classes are defined and `AttackType`(not defined in the task requirements) where different attack types are defined.
 
 Package `items` includes:
-- An abstract class `Item`.
-- Enums `ItemType` where different item types are defined and `SlotType` where different slot types are defined.
+- Interface `Item`.
 - Subpackages `armor` and `weapon`.
 
 `items` subpackage `armor` includes:
-- An abstract class `Armor` (inherited from `Item`) and its subclasses for different armor types (`Cloth`, `Leather`, `Plate`).
-- Enum `HeroType` where different allowed armor types are defined.
+- An abstract class `Armor` (implements `Item`) and its subclasses for different armor types (`ClothArmor`, `LeatherArmor`, `PlateArmor`).
 
 `items` subpackage `weapon` includes:
-- Class `Weapon`.
-- Enum `WeaponType` where different allowed weapon types are defined.
+- Interface `Weapon` (implements `Item`) and classes for different weapon types (`MagicWeapon`, `MeleeWeapon`, `RangedWeapon`) that all implement `Weapon`.
 
 ## Demonstration
 Running the program will start a text user interface where the user can create characters and items and perform

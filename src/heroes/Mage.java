@@ -3,7 +3,7 @@ package heroes;
 public class Mage extends Hero {
     public Mage(String name) {
         super(name);
-        heroType = HeroType.Mage;
+        heroType = "Mage";
         baseHealth = 100;
         baseStrength = 2;
         baseDexterity = 3;
@@ -11,7 +11,7 @@ public class Mage extends Hero {
         currentHealth = baseHealth;
     }
 
-    protected void levelUp() {
+    public void levelUp() {
         super.levelUp();
         baseHealth += 15;
         currentHealth += 15;

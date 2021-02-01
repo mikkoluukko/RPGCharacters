@@ -3,14 +3,12 @@ import heroes.Mage;
 import heroes.Ranger;
 import heroes.Warrior;
 import items.Item;
-import items.ItemType;
-import items.SlotType;
-import items.armor.Armor;
-import items.armor.Cloth;
-import items.armor.Leather;
-import items.armor.Plate;
-import items.weapons.Weapon;
-import items.weapons.WeaponType;
+import items.armor.ClothArmor;
+import items.armor.LeatherArmor;
+import items.armor.PlateArmor;
+import items.weapons.MagicWeapon;
+import items.weapons.MeleeWeapon;
+import items.weapons.RangedWeapon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,46 +31,52 @@ public class Logic {
     }
 
     public boolean createHero(String heroClass, String name) {
-        boolean heroCreated = true;
+        boolean isCreated = true;
         switch (heroClass) {
             case "Warrior" -> heroes.put(name, new Warrior(name));
             case "Ranger" -> heroes.put(name, new Ranger(name));
             case "Mage" -> heroes.put(name, new Mage(name));
-            default -> heroCreated = false;
+            default -> isCreated = false;
         }
-        return heroCreated;
+        return isCreated;
     }
 
     public boolean createWeapon(String weaponType, String name, int level) {
-        boolean weaponCreated = true;
+        boolean isCreated = true;
         switch (weaponType) {
-            case "Melee" -> items.put(name, new Weapon(name, level, WeaponType.Melee));
-            case "Ranged" -> items.put(name, new Weapon(name, level, WeaponType.Ranged));
-            case "Magic" -> items.put(name, new Weapon(name, level, WeaponType.Magic));
-            default -> weaponCreated = false;
+            case "Melee" -> items.put(name, new MeleeWeapon(name, level));
+            case "Ranged" -> items.put(name, new RangedWeapon(name, level));
+            case "Magic" -> items.put(name, new MagicWeapon(name, level));
+            default -> isCreated = false;
         }
-        return weaponCreated;
+        return isCreated;
     }
 
-    public boolean createArmor(String armorType, String name, int level, String slot) {
-        boolean slotTypeOk = true;
-        boolean armorCreated = true;
-        SlotType slotType = null;
-        switch (slot) {
-            case "Head" -> slotType = SlotType.Head;
-            case "Body" -> slotType = SlotType.Body;
-            case "Legs" -> slotType = SlotType.Legs;
-            default -> slotTypeOk = false;
-        }
-        if (slotTypeOk) {
+    public boolean createArmor(String armorType, String name, int level, String slotType) {
+        boolean isCreated = false;
+        if (isLegalSlot(slotType) && isLegalArmorType(armorType)) {
             switch (armorType) {
-                case "Cloth" -> items.put(name, new Cloth(name, level, slotType));
-                case "Leather" -> items.put(name, new Leather(name, level, slotType));
-                case "Plate" -> items.put(name, new Plate(name, level, slotType));
-                default -> armorCreated = false;
+                case "Cloth" -> items.put(name, new ClothArmor(name, level, slotType));
+                case "Leather" -> items.put(name, new LeatherArmor(name, level, slotType));
+                case "Plate" -> items.put(name, new PlateArmor(name, level, slotType));
             }
+            isCreated = true;
         }
-        return armorCreated;
+        return isCreated;
+    }
+
+    public boolean isLegalSlot(String slot) {
+        return switch (slot) {
+            case "Head", "Body", "Legs" -> true;
+            default -> false;
+        };
+    }
+
+    public boolean isLegalArmorType(String armorType) {
+        return switch (armorType) {
+            case "Cloth", "Leather", "Plate" -> true;
+            default -> false;
+        };
     }
 
     public boolean checkHeroExists(String name) {
@@ -80,35 +84,29 @@ public class Logic {
     }
 
     public boolean equipItem(String heroName, String itemName) {
-        boolean equippingSuccessfull = false;
+        boolean equippingSuccessful = false;
         if (items.containsKey(itemName)) {
-            if (items.get(itemName).getItemType() == ItemType.Weapon) {
-                equippingSuccessfull = heroes.get(heroName).equipWeapon((Weapon) items.get(itemName));
-            } else if (items.get(itemName).getItemType() == ItemType.Armor) {
-                equippingSuccessfull = heroes.get(heroName).equipArmor((Armor) items.get(itemName));
-            }
+            equippingSuccessful = heroes.get(heroName).equipItem(items.get(itemName));
         }
-        return equippingSuccessfull;
+        return equippingSuccessful;
     }
 
     public boolean removeItem(String heroName, String itemName) {
-        boolean removingSuccessfull = false;
+        boolean isRemoved = false;
         if (items.containsKey(itemName)) {
-            if (items.get(itemName).getItemType() == ItemType.Weapon) {
-                removingSuccessfull = heroes.get(heroName).removeWeapon((Weapon) items.get(itemName));
-            } else if (items.get(itemName).getItemType() == ItemType.Armor) {
-                removingSuccessfull = heroes.get(heroName).removeArmor((Armor) items.get(itemName));
+            if (items.containsKey(itemName)) {
+                isRemoved = heroes.get(heroName).removeItem(items.get(itemName));
             }
         }
-        return removingSuccessfull;
+        return isRemoved;
     }
 
     public boolean attack(String heroName, String opponentName) {
-        boolean attackSuccesfull = false;
+        boolean didAttack = false;
         if (heroes.containsKey(opponentName)) {
             heroes.get(heroName).performAttack(heroes.get(opponentName));
-            attackSuccesfull = true;
+            didAttack = true;
         }
-        return attackSuccesfull;
+        return didAttack;
     }
 }

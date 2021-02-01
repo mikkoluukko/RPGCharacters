@@ -3,7 +3,7 @@ package heroes;
 public class Ranger extends Hero {
     public Ranger(String name) {
         super(name);
-        heroType = HeroType.Ranger;
+        heroType = "Ranger";
         baseHealth = 120;
         baseStrength = 5;
         baseDexterity = 10;
@@ -11,7 +11,7 @@ public class Ranger extends Hero {
         currentHealth = baseHealth;
     }
 
-    protected void levelUp() {
+    public void levelUp() {
         super.levelUp();
         baseHealth += 20;
         currentHealth += 20;

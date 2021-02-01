@@ -1,12 +1,10 @@
 package items.armor;
 
-import items.SlotType;
+public class ClothArmor extends Armor {
 
-public class Cloth extends Armor {
-
-    public Cloth(String name, int level, SlotType slotType) {
+    public ClothArmor(String name, int level, String slotType) {
         super(name, level, slotType);
-        armorType = ArmorType.Cloth;
+        armorType = "Cloth";
         healthBonus = (int) Math.floor(getSlotMultiplier() * (10 + level * 5));
         strengthBonus = 0;
         dexterityBonus = (int) Math.floor(getSlotMultiplier() * (1 + level));

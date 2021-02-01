@@ -2,22 +2,16 @@ import heroes.Hero;
 import heroes.Mage;
 import heroes.Ranger;
 import heroes.Warrior;
-import items.Item;
-import items.ItemType;
-import items.SlotType;
 import items.armor.Armor;
-import items.armor.Cloth;
-import items.armor.Leather;
-import items.armor.Plate;
+import items.armor.ClothArmor;
+import items.armor.LeatherArmor;
+import items.armor.PlateArmor;
+import items.weapons.MagicWeapon;
+import items.weapons.MeleeWeapon;
+import items.weapons.RangedWeapon;
 import items.weapons.Weapon;
-import items.weapons.WeaponType;
-import org.w3c.dom.ls.LSOutput;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class UserInterface {
     Scanner scanner;
@@ -34,14 +28,17 @@ public class UserInterface {
             System.out.println("Enter a valid integer");
             scanner.nextLine();
         }
-        return scanner.nextInt();
+        int number = scanner.nextInt();
+        scanner.nextLine();
+        return number;
     }
 
     public void runUserInterface() {
         System.out.println("Welcome to RPG Characters demonstration");
         boolean runProgram = true;
         while (runProgram) {
-            System.out.println("\nTo select an action input the number and press Enter:");
+            System.out.println("-----------------------------------------------------");
+            System.out.println("To select an action input the number and press Enter:");
             System.out.println("1 - Create a new hero");
             System.out.println("2 - Create a new item");
             System.out.println("3 - Display all heroes");
@@ -99,9 +96,9 @@ public class UserInterface {
         String weaponName = scanner.nextLine();
         System.out.println("Input weapon's level:");
         int weaponLevel = getInt();
-        scanner.nextLine();
         if (logic.createWeapon(weaponType, weaponName, weaponLevel)) {
-            System.out.println(weaponType + " weapon named: " + weaponName + " successfully created");
+            System.out.println("Level " + weaponLevel + " " + weaponType +
+                    " weapon named: " + weaponName + " successfully created");
         } else {
             System.out.println("Invalid weapon type: " + weaponType);
         }
@@ -117,7 +114,8 @@ public class UserInterface {
         System.out.println("Input armor's slot (Head, Body, Legs):");
         String slot = scanner.nextLine();
         if (logic.createArmor(armorType, armorName, armorLevel, slot)) {
-            System.out.println(armorType + " armor for slot: " + slot + " named: " + armorName + " successfully created");
+            System.out.println("Level " + armorLevel + " " + armorType + " armor for slot: " + slot +
+                    " named: " + armorName + " successfully created");
         } else {
             System.out.println("Invalid armor type: " + armorType + " or slot: " + slot);
         }
@@ -156,7 +154,7 @@ public class UserInterface {
     public void displayHero(String heroName) {
         Hero hero = logic.getHeroes().get(heroName);
         System.out.println(hero);
-        System.out.println(hero.showEquipment());
+        System.out.println(hero.getEquipmentInfo());
     }
 
     private void equipItem(String heroName) {
@@ -197,30 +195,30 @@ public class UserInterface {
         Hero warrior = new Warrior("Conan the Barbarian");
         Hero ranger = new Ranger("Robin Hood");
         Hero mage = new Mage("Harry Potter");
-        Weapon beginnerSword = new Weapon("Beginner Sword", 1, WeaponType.Melee);
-        Weapon averageBow = new Weapon("Average Bow", 5, WeaponType.Ranged);
-        Weapon masterWand = new Weapon("Master Wand", 10, WeaponType.Magic);
-        Armor plateChest = new Plate("Plate Chest", 2, SlotType.Body);
-        Armor oldPants = new Cloth("Old Pants", 1, SlotType.Legs);
-        Armor leatherHat = new Leather("Leather Hat", 6, SlotType.Head);
-        warrior.equipWeapon(beginnerSword);
+        Weapon beginnerSword = new MeleeWeapon("Beginner Sword", 1);
+        Weapon averageBow = new RangedWeapon("Average Bow", 5);
+        Weapon masterWand = new MagicWeapon("Master Wand", 10);
+        Armor plateChest = new PlateArmor("Plate Chest", 2, "Body");
+        Armor oldPants = new ClothArmor("Old Pants", 1, "Legs");
+        Armor leatherHat = new LeatherArmor("Leather Hat", 6, "Head");
+        warrior.equipItem(beginnerSword);
         warrior.addXp(90);
-        warrior.equipArmor(plateChest);
+        warrior.equipItem(plateChest);
         warrior.addXp(90);
-        warrior.equipArmor(plateChest);
+        warrior.equipItem(plateChest);
         warrior.addXp(1000);
-        warrior.equipArmor(leatherHat);
-        System.out.println(warrior.showEquipment());
+        warrior.equipItem(leatherHat);
+        System.out.println(warrior.getEquipmentInfo());
         System.out.println(warrior);
-        warrior.removeArmor(plateChest);
-        warrior.removeArmor(leatherHat);
-        System.out.println(warrior.showEquipment());
+        warrior.removeItem(plateChest);
+        warrior.removeItem(leatherHat);
+        System.out.println(warrior.getEquipmentInfo());
         System.out.println(warrior);
         mage.addXp(500);
         warrior.performAttack(mage);
         System.out.println(mage);
         mage.addXp(1000);
-        mage.equipWeapon(masterWand);
+        mage.equipItem(masterWand);
         System.out.println(mage);
         mage.performAttack(warrior);
     }

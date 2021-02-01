@@ -4,10 +4,12 @@ import items.Item;
 import items.armor.Armor;
 import items.weapons.Weapon;
 
-// All the variables are common to all the inheriting character classes
+// Hero is implemented as an abstract class instead of an interface because besides constructor there is
+// is only one method ( levelUp() ) that has unique implementation for different character classes.
+// Usage of the variables is also similar in all the subclasses.
 public abstract class Hero {
     protected String name;
-    protected HeroType heroType;
+    protected String heroType;
     protected int baseHealth;
     protected int baseStrength;
     protected int baseDexterity;
@@ -31,6 +33,7 @@ public abstract class Hero {
 //    xpLimitToNext means the total xp character needs to have in order to level up,
 //    xpPerLevel means the xp amount that character needs to gain after previous level up limit to level up again
 //    xpToNext means the amount of xp still required to reach next level up limit, i.e. xpLimitToNext - xpTotal
+//    These are spread to their own variables to increase readability of all the xp-related methods.
     public Hero(String name) {
         this.name = name;
         equipmentHealth = 0;
@@ -45,7 +48,7 @@ public abstract class Hero {
         attack = new Attack(this);
     }
 
-    protected void levelUp() {
+    public void levelUp() {
         level++;
         xpPerLevel = (int) Math.floor(xpPerLevel * 1.1);
         xpLimitToNext = xpLimitToNext + xpPerLevel;
@@ -57,6 +60,7 @@ public abstract class Hero {
         xpTotal += xp;
         checkLevel();
         xpToNext = xpLimitToNext - xpTotal;
+        System.out.println(name + " gained " + xp + " XP. Level is now: " + level + ", XP to next level: " + xpToNext);
     }
 
     protected void checkLevel() {
@@ -65,7 +69,7 @@ public abstract class Hero {
         }
     }
 
-    public boolean checkItemLevel(Item item) {
+    public boolean isEquipable(Item item) {
         if (level >= item.getLevel()) {
             System.out.println(name + " equipped " + item.getName());
         } else {
@@ -74,14 +78,30 @@ public abstract class Hero {
         return level >= item.getLevel();
     }
 
-    public boolean equipWeapon(Weapon weapon) {
-        if (checkItemLevel(weapon)) {
-            this.weapon = weapon;
-            attack.updateDamage();
-            return true;
-        } else {
-            return false;
+    public boolean equipItem(Item item) {
+        boolean isEquipped = false;
+        if (isEquipable(item)) {
+            switch (item.getItemType()) {
+                case "Weapon" -> isEquipped = equipWeapon((Weapon) item);
+                case "Armor" -> isEquipped = equipArmor((Armor) item);
+            }
         }
+        return isEquipped;
+    }
+
+    public boolean removeItem(Item item) {
+        boolean isRemoved = false;
+        switch (item.getItemType()) {
+            case "Weapon" -> isRemoved = removeWeapon((Weapon) item);
+            case "Armor" -> isRemoved = removeArmor((Armor) item);
+        }
+        return isRemoved;
+    }
+
+    public boolean equipWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        attack.updateDamage();
+        return true;
     }
 
     public boolean removeWeapon(Weapon weapon) {
@@ -91,81 +111,86 @@ public abstract class Hero {
             System.out.println(name + " removed " + weapon.getName());
             return true;
         } else {
+            System.out.println(name + " doesn't have " + weapon.getName() + " equipped");
             return false;
         }
     }
 
-    public boolean removeArmor(Armor armor) {
-        boolean removingSuccessfull = false;
-        equipmentHealth -= armor.getHealthBonus();
-        equipmentStrength -= armor.getStrengthBonus();
-        equipmentDexterity -= armor.getDexterityBonus();
-        equipmentIntelligence -= armor.getIntelligenceBonus();
-        currentHealth -= armor.getHealthBonus();
-        attack.updateDamage();
+//    First remove the possibly currently equipped armor in the selected slot
+//    to avoid errors in equipment stat bonuses.
+    public boolean equipArmor(Armor armor) {
         switch (armor.getSlotType()) {
-            case Head -> {
+            case "Head" -> {
+                if (headArmor != null) {
+                    removeArmor(headArmor);
+                }
+                headArmor = armor;
+                addEquipmentBonus(armor);
+            }
+            case "Body" -> {
+                if (bodyArmor != null) {
+                    removeArmor(bodyArmor);
+                }
+                bodyArmor = armor;
+                addEquipmentBonus(armor);
+            }
+            case "Legs" -> {
+                if (legsArmor != null) {
+                    removeArmor(legsArmor);
+                }
+                legsArmor = armor;
+                addEquipmentBonus(armor);
+            }
+        }
+        return true;
+    }
+
+    public boolean removeArmor(Armor armor) {
+        boolean isRemoved = false;
+        switch (armor.getSlotType()) {
+            case "Head" -> {
                 if (headArmor == armor) {
-                    removingSuccessfull = true;
+                    isRemoved = true;
                     headArmor = null;
                 }
             }
-            case Body -> {
+            case "Body" -> {
                 if (bodyArmor == armor) {
-                    removingSuccessfull = true;
+                    isRemoved = true;
                     bodyArmor = null;
                 }
             }
-            case Legs -> {
-                if ( bodyArmor == armor) {
-                    removingSuccessfull = true;
+            case "Legs" -> {
+                if (bodyArmor == armor) {
+                    isRemoved = true;
                     legsArmor = null;
                 }
             }
         }
-        if (removingSuccessfull) {
+        if (isRemoved) {
+            removeEquipmentBonus(armor);
             System.out.println(name + " removed " + armor.getName());
-        }
-        return removingSuccessfull;
-    }
-
-    public boolean equipArmor(Armor armor) {
-        if (checkItemLevel(armor)) {
-            switch (armor.getSlotType()) {
-                case Head -> {
-                    if (headArmor != null) {
-                        removeArmor(headArmor);
-                    }
-                    headArmor = armor;
-                    updateEquipmentBonus(armor);
-                }
-                case Body -> {
-                    if (bodyArmor != null) {
-                        removeArmor(bodyArmor);
-                    }
-                    bodyArmor = armor;
-                    updateEquipmentBonus(armor);
-                }
-                case Legs -> {
-                    if (legsArmor != null) {
-                        removeArmor(legsArmor);
-                    }
-                    legsArmor = armor;
-                    updateEquipmentBonus(armor);
-                }
-            }
-            return true;
         } else {
-            return false;
+            System.out.println(name + " doesn't have " + armor.getName() + " equipped");
         }
+        return isRemoved;
     }
 
-    protected void updateEquipmentBonus(Armor armor) {
+    public void addEquipmentBonus(Armor armor) {
         equipmentHealth += armor.getHealthBonus();
         equipmentStrength += armor.getStrengthBonus();
         equipmentDexterity += armor.getDexterityBonus();
         equipmentIntelligence += armor.getIntelligenceBonus();
         currentHealth += armor.getHealthBonus();
+        attack.updateDamage();
+    }
+
+    public void removeEquipmentBonus(Armor armor) {
+        equipmentHealth -= armor.getHealthBonus();
+        equipmentStrength -= armor.getStrengthBonus();
+        equipmentDexterity -= armor.getDexterityBonus();
+        equipmentIntelligence -= armor.getIntelligenceBonus();
+        currentHealth -= armor.getHealthBonus();
         attack.updateDamage();
     }
 
@@ -198,7 +223,7 @@ public abstract class Hero {
                 "\nXP to next: " + xpToNext;
     }
 
-    public String showEquipment() {
+    public String getEquipmentInfo() {
         return "\n" + name + " (" + heroType + ") " + "has the following items equipped:" +
                 "\nWeapon: " + (weapon != null ? weapon.getName() : " empty") +
                 "\nHead: " + (headArmor != null ? headArmor.getName() : " empty") +
